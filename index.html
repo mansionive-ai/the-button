@@ -784,10 +784,10 @@ function renderAdmin() {
   S.codes.forEach((c) => { (byPid[c.playerId] = byPid[c.playerId] || []).push(c.code); });
   const pids = [...new Set([...Object.keys(S.players), ...Object.keys(byPid)])].sort();
   $('codesBody').innerHTML = pids.map((pid) => `<tr>
-      <td>${parseInt(pid.slice(1), 10)}</td>
+      <td>${esc(parseInt(pid.slice(1), 10) || pid)}</td>
       <td>${nickOf(pid) ? esc(nickOf(pid)) : '<span class="dim">-</span>'}</td>
-      <td class="code">${(byPid[pid] || ['-']).join(', ')}</td>
-      <td style="text-align:right"><button class="btn ghost" type="button" data-reissue="${pid}">재발급</button></td>
+      <td class="code">${esc((byPid[pid] || ['-']).join(', '))}</td>
+      <td style="text-align:right"><button class="btn ghost" type="button" data-reissue="${esc(pid)}">재발급</button></td>
     </tr>`).join('');
 }
 
