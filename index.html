@@ -4,231 +4,187 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>더 버튼</title>
-<meta name="theme-color" content="#0A1636">
+<meta name="theme-color" content="#091329">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23E0201B'/></svg>">
 <style>
   :root {
     color-scheme: dark;
-    --navy-0: #040915;
-    --navy-1: #0A1636;
-    --navy-2: #15295C;
-    --text: #E8ECF4;
-    --mute: #8E9AB3;
-    --hair: rgba(255, 255, 255, .14);
-    --led: #FF2D20;
-    --steel: linear-gradient(135deg, #F4F6FA 0%, #8C95A5 22%, #E4E8EE 44%, #69727F 64%, #EEF1F5 82%, #9AA2B0 100%);
+    --bg0: #040815;
+    --bg1: #091329;
+    --bg2: #0F1D42;
+    --panel: #0A1430;
+    --text: #E9EDF5;
+    --mute: #7C88A3;
+    --hair: rgba(255, 255, 255, .12);
+    --led: #FF3B2F;
+    --red: #C4231C;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; }
   body {
     color: var(--text);
     font-family: 'Pretendard', system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-    background-color: var(--navy-0);
-    background-image:
-      radial-gradient(ellipse 70% 50% at 50% 42%, rgba(96, 136, 230, .20), transparent 70%),
-      repeating-conic-gradient(from 0deg at 50% 42%, rgba(255, 255, 255, .03) 0deg .45deg, transparent .45deg 1.8deg),
-      radial-gradient(ellipse 120% 90% at 50% 42%, var(--navy-2) 0%, var(--navy-1) 45%, var(--navy-0) 100%);
-    background-attachment: fixed;
+    background: radial-gradient(ellipse 90% 70% at 50% 40%, var(--bg2) 0%, var(--bg1) 48%, var(--bg0) 100%) fixed;
+    background-color: var(--bg0);
     -webkit-tap-highlight-color: transparent;
+  }
+  /* 아주 옅은 입자감 (그라데이션 계단 현상 방지) */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .06;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
   [hidden] { display: none !important; }
   button { font: inherit; }
+  .login, .stage, .admin { position: relative; z-index: 1; }
 
   /* ---------- 로그인 ---------- */
-  .login { min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; }
-  .login form { width: min(100%, 300px); display: grid; gap: 10px; }
+  .login { min-height: 100dvh; display: grid; place-items: center; padding: 24px 20px; }
+  .login form { width: min(100%, 280px); display: grid; gap: 6px; }
   .login input {
-    width: 100%; font: inherit; font-size: 16px; padding: 14px 16px;
-    color: var(--text); background: rgba(255, 255, 255, .05);
-    border: 1px solid rgba(255, 255, 255, .16); border-radius: 12px;
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    width: 100%; font: inherit; font-size: 16px; padding: 14px 4px;
+    color: var(--text); background: transparent; text-align: center;
+    border: 0; border-bottom: 1px solid rgba(255, 255, 255, .22); border-radius: 0;
   }
-  .login input::placeholder { color: rgba(142, 154, 179, .85); }
-  .login input:focus-visible { outline: none; border-color: rgba(255, 255, 255, .55); box-shadow: 0 0 0 3px rgba(255, 255, 255, .08); }
-  #codeIn { text-transform: uppercase; letter-spacing: .12em; }
+  .login input::placeholder { color: var(--mute); letter-spacing: .08em; }
+  .login input:focus-visible { outline: none; border-bottom-color: rgba(255, 255, 255, .75); }
+  #codeIn { text-transform: uppercase; letter-spacing: .16em; }
   .go {
-    margin-top: 6px; padding: 14px; border-radius: 12px; cursor: pointer;
-    font-size: 16px; font-weight: 600; letter-spacing: .1em; color: #fff;
-    background: linear-gradient(180deg, #F2382F, #B3100E);
-    border: 1px solid rgba(255, 255, 255, .2);
-    box-shadow: 0 12px 26px rgba(224, 29, 26, .35), inset 0 1px 0 rgba(255, 255, 255, .35);
+    margin-top: 26px; padding: 14px; cursor: pointer;
+    font-size: 14px; font-weight: 500; letter-spacing: .3em; color: #fff;
+    background: var(--red); border: 0; border-radius: 999px;
+    box-shadow: 0 16px 36px rgba(196, 35, 28, .28);
+    transition: box-shadow .2s ease;
   }
-  .go:active { transform: translateY(1px); }
-  .go:disabled { opacity: .6; }
-  .go:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
-  .err { min-height: 1.3em; margin: 4px 0 0; color: #F5C6C1; font-size: 14px; text-align: center; }
+  .go:hover { box-shadow: 0 18px 44px rgba(196, 35, 28, .42); }
+  .go:disabled { opacity: .55; }
+  .go:focus-visible { outline: 1px solid rgba(255, 255, 255, .8); outline-offset: 4px; }
+  .err { min-height: 1.3em; margin: 10px 0 0; color: #E9A49D; font-size: 13px; text-align: center; }
 
   /* ---------- 타이머 ---------- */
   .stage {
     min-height: 100dvh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: clamp(36px, 8vh, 72px);
-    padding: 76px 16px 56px;
+    gap: clamp(48px, 10vh, 96px);
+    padding: 80px 24px 64px;
   }
-  .clock-frame {
-    width: min(100%, 560px);
-    padding: 3px;
-    border-radius: 22px;
-    background: var(--steel);
-    box-shadow: 0 26px 54px rgba(0, 0, 0, .6), 0 6px 14px rgba(0, 0, 0, .35);
-  }
-  .clock {
-    position: relative;
-    overflow: hidden;
-    border-radius: 19px;
-    padding: clamp(16px, 4.5vw, 28px) clamp(16px, 5vw, 32px);
-    background: linear-gradient(180deg, #05070C 0%, #0B0F17 100%);
-    box-shadow: inset 0 3px 14px rgba(0, 0, 0, .95), inset 0 0 0 1px rgba(255, 255, 255, .05);
-  }
-  .clock::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(162deg, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, .025) 34%, transparent 35%);
-  }
-  .clock svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 6px rgba(255, 45, 32, .7)); }
-  .seg { fill: var(--led); opacity: .07; }
+  .clock-frame { width: min(100%, 500px); }
+  .clock { position: relative; }
+  .clock svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 12px rgba(255, 59, 47, .4)); }
+  .seg { fill: var(--led); opacity: .045; }
   .seg.on { opacity: 1; }
   .colon { fill: var(--led); }
 
   /* ---------- 버튼 ---------- */
-  .btn-wrap { position: relative; width: min(72vw, 300px); aspect-ratio: 1; display: grid; place-items: center; }
-  .ticks { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .ticks line { stroke: rgba(214, 222, 238, .32); stroke-width: 1; stroke-linecap: round; }
-  .ticks line.major { stroke: rgba(236, 241, 250, .78); stroke-width: 2; }
-  .ring {
-    position: relative;
-    width: 80%; aspect-ratio: 1; border-radius: 50%;
-    padding: 9%;
-    background: conic-gradient(from 200deg, #F5F7FA, #8D96A6 12%, #E7EAEF 25%, #5F6876 40%, #F1F3F7 55%, #78818F 70%, #E9ECF1 85%, #F5F7FA);
-    box-shadow:
-      0 30px 56px rgba(0, 0, 0, .62),
-      0 8px 16px rgba(0, 0, 0, .4),
-      inset 0 1px 1px rgba(255, 255, 255, .9),
-      inset 0 -2px 4px rgba(0, 0, 0, .35);
-  }
-  .ring::before {
+  .btn-wrap { position: relative; width: min(64vw, 260px); aspect-ratio: 1; display: grid; place-items: center; }
+  .btn-wrap::before {
     content: ''; position: absolute; inset: 0; border-radius: 50%;
-    background: repeating-conic-gradient(rgba(0, 0, 0, .26) 0deg 1deg, rgba(255, 255, 255, .26) 1deg 2deg);
-    -webkit-mask: radial-gradient(circle closest-side, transparent 89%, #000 90%, #000 98.5%, transparent 99.5%);
-            mask: radial-gradient(circle closest-side, transparent 89%, #000 90%, #000 98.5%, transparent 99.5%);
-  }
-  .ring::after {
-    content: ''; position: absolute; inset: 7.2%; border-radius: 50%;
-    background: radial-gradient(circle at 50% 38%, #161B26, #04060A 72%);
-    box-shadow: inset 0 6px 14px rgba(0, 0, 0, .95), 0 1px 0 rgba(255, 255, 255, .55);
+    border: 1px solid rgba(255, 255, 255, .11);
   }
   .big {
-    position: relative; z-index: 1;
-    width: 100%; height: 100%;
+    position: relative;
+    width: 76%; height: 76%;
     border: 0; border-radius: 50%;
     cursor: pointer;
-    color: #fff;
-    font-size: clamp(15px, 4.4vw, 18px); font-weight: 600; letter-spacing: .05em; line-height: 1.45;
+    color: rgba(255, 255, 255, .94);
+    font-size: 14px; font-weight: 500; letter-spacing: .14em; line-height: 1.7;
     white-space: pre-line;
-    background: radial-gradient(circle at 50% 30%, #FF7A6B 0%, #EA2820 30%, #B30F0E 60%, #5A0405 100%);
+    background: radial-gradient(circle at 50% 36%, #D8352D 0%, #BD221B 58%, #9D1913 100%);
     box-shadow:
-      0 0 36px rgba(255, 40, 30, .45),
-      inset 0 -12px 20px rgba(0, 0, 0, .45),
-      inset 0 3px 6px rgba(255, 255, 255, .35);
-    transition: transform .08s ease-out, box-shadow .08s ease-out;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+      0 26px 64px rgba(196, 35, 28, .30),
+      0 12px 26px rgba(0, 0, 0, .45),
+      inset 0 1px 0 rgba(255, 255, 255, .16),
+      inset 0 -14px 28px rgba(0, 0, 0, .16);
+    transition: transform .14s ease, box-shadow .14s ease;
     touch-action: manipulation;
   }
-  .big::before {
-    content: ''; position: absolute; left: 19%; right: 19%; top: 6%; height: 36%;
-    border-radius: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0));
-    pointer-events: none;
+  .big:not(:disabled):hover {
+    box-shadow: 0 26px 80px rgba(220, 45, 35, .42), 0 12px 26px rgba(0, 0, 0, .45),
+      inset 0 1px 0 rgba(255, 255, 255, .18), inset 0 -14px 28px rgba(0, 0, 0, .16);
   }
-  .big span { position: relative; z-index: 1; }
   .big:not(:disabled):active {
-    transform: scale(.955);
-    box-shadow: 0 0 18px rgba(255, 40, 30, .35), inset 0 -4px 10px rgba(0, 0, 0, .5), inset 0 8px 14px rgba(0, 0, 0, .35);
+    transform: scale(.97);
+    box-shadow: 0 12px 34px rgba(196, 35, 28, .24), 0 6px 14px rgba(0, 0, 0, .4), inset 0 3px 12px rgba(0, 0, 0, .25);
   }
   .big:disabled {
     cursor: default;
-    color: rgba(232, 236, 244, .88);
-    background: radial-gradient(circle at 50% 30%, #6B2B2D 0%, #3E1113 38%, #1F0708 72%, #120405 100%);
-    box-shadow: inset 0 -12px 20px rgba(0, 0, 0, .5), inset 0 3px 6px rgba(255, 255, 255, .12);
+    color: rgba(233, 237, 245, .66);
+    background: radial-gradient(circle at 50% 36%, #351922 0%, #26111A 60%, #1C0C13 100%);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06);
   }
-  .big:disabled::before { opacity: .3; }
-  .big.armed { animation: glow .5s ease-in-out infinite alternate; }
-  @keyframes glow {
+  .big.armed { animation: breathe .9s ease-in-out infinite alternate; }
+  @keyframes breathe {
     to {
-      box-shadow: 0 0 64px rgba(255, 60, 40, .9), inset 0 -12px 20px rgba(0, 0, 0, .4), inset 0 3px 6px rgba(255, 255, 255, .45);
-      filter: brightness(1.12);
+      box-shadow: 0 26px 96px rgba(255, 59, 47, .58), 0 12px 26px rgba(0, 0, 0, .45),
+        inset 0 1px 0 rgba(255, 255, 255, .2), inset 0 -14px 28px rgba(0, 0, 0, .12);
     }
   }
-  .big:focus-visible { outline: 2px solid rgba(255, 255, 255, .85); outline-offset: 6px; }
+  .big:focus-visible { outline: 1px solid rgba(255, 255, 255, .8); outline-offset: 10px; }
 
   /* ---------- 순위 ---------- */
   .rank-btn {
-    position: fixed; top: max(16px, env(safe-area-inset-top)); right: 16px; z-index: 5;
-    padding: 7px 16px; border-radius: 999px; cursor: pointer;
-    font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--text);
-    background: rgba(255, 255, 255, .06);
-    border: 1px solid rgba(255, 255, 255, .2);
-    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
+    position: fixed; top: max(18px, env(safe-area-inset-top)); right: 20px; z-index: 5;
+    padding: 6px 1px; cursor: pointer;
+    font-size: 13px; font-weight: 500; letter-spacing: .22em; color: var(--text);
+    background: none; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .35);
   }
-  .rank-btn:hover { background: rgba(255, 255, 255, .1); }
-  .rank-btn:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 3px; }
+  .rank-btn:hover, .rank-btn[aria-expanded="true"] { border-bottom-color: var(--text); }
+  .rank-btn:focus-visible { outline: 1px solid rgba(255, 255, 255, .8); outline-offset: 4px; }
   .rank-panel {
-    position: fixed; top: calc(max(16px, env(safe-area-inset-top)) + 44px); right: 16px; z-index: 5;
-    width: min(290px, calc(100vw - 32px)); max-height: 72vh; overflow: auto;
-    background: rgba(8, 15, 34, .88);
-    -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, .12);
-    border-radius: 16px;
-    box-shadow: 0 24px 54px rgba(0, 0, 0, .55);
+    position: fixed; top: calc(max(18px, env(safe-area-inset-top)) + 40px); right: 16px; z-index: 5;
+    width: min(280px, calc(100vw - 32px)); max-height: 72vh; overflow: auto;
+    padding: 6px 0;
+    background: var(--panel);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .55);
   }
-  .rank-panel table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  .rank-panel td { padding: 10px 14px; border-bottom: 1px solid rgba(255, 255, 255, .07); font-variant-numeric: tabular-nums; }
-  .rank-panel .n { width: 2.6em; font-weight: 600; color: var(--mute); }
-  .rank-panel tr:nth-child(-n+3) .n { color: #F1F4F9; }
-  .rank-panel .s { text-align: right; font-weight: 600; color: #F4F6FA; }
-  .rank-panel tr.me td { background: rgba(255, 255, 255, .07); }
-  .rank-panel .dim { color: rgba(142, 154, 179, .55); }
-  .rank-panel .foot { display: flex; justify-content: flex-end; padding: 6px 10px; }
-  .linkbtn { background: none; border: 0; color: var(--mute); font-size: 13px; text-decoration: underline; cursor: pointer; padding: 4px; }
+  .rank-panel table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .rank-panel td { padding: 11px 18px; border-bottom: 1px solid rgba(255, 255, 255, .055); font-variant-numeric: tabular-nums; }
+  .rank-panel .n { width: 2.6em; color: var(--mute); }
+  .rank-panel .s { text-align: right; color: var(--text); }
+  .rank-panel tr.me td { color: #fff; }
+  .rank-panel tr.me td:first-child { box-shadow: inset 2px 0 0 var(--led); }
+  .rank-panel .dim { color: rgba(124, 136, 163, .55); }
+  .rank-panel .foot { display: flex; justify-content: flex-end; padding: 8px 12px 4px; }
+  .linkbtn { background: none; border: 0; color: var(--mute); font-size: 12px; letter-spacing: .08em; cursor: pointer; padding: 4px; }
+  .linkbtn:hover { color: var(--text); }
 
   .toast {
-    position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translateX(-50%);
-    width: min(92vw, 420px); z-index: 10;
-    padding: 12px 16px; border-radius: 12px;
-    font-size: 15px; text-align: center; color: var(--text);
-    background: rgba(8, 15, 34, .94);
-    border: 1px solid rgba(255, 255, 255, .14);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, .5);
+    position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+    width: min(90vw, 400px); z-index: 10;
+    padding: 13px 18px; border-radius: 12px;
+    font-size: 14px; text-align: center; color: var(--text);
+    background: var(--panel); border: 1px solid var(--hair);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, .5);
   }
 
   /* ---------- 관리자 (관리자 코드로 들어왔을 때만 보임) ---------- */
   .admin {
-    width: min(calc(100% - 32px), 480px); margin: 0 auto 40px; padding: 16px;
+    width: min(calc(100% - 32px), 480px); margin: 0 auto 48px; padding: 18px;
     font-size: 14px; color: var(--text);
-    background: rgba(8, 15, 34, .82);
-    border: 1px solid rgba(255, 255, 255, .12); border-radius: 16px;
+    background: var(--panel); border: 1px solid var(--hair); border-radius: 14px;
   }
-  .admin label { display: block; font-size: 13px; color: var(--mute); margin: 8px 0 4px; }
+  .admin label { display: block; font-size: 12px; color: var(--mute); margin: 10px 0 4px; letter-spacing: .04em; }
   .admin input {
     width: 100%; min-width: 0; font: inherit; font-size: 15px; padding: 8px 10px;
-    color: var(--text); background: rgba(255, 255, 255, .05);
-    border: 1px solid rgba(255, 255, 255, .16); border-radius: 8px;
+    color: var(--text); background: rgba(255, 255, 255, .04);
+    border: 1px solid var(--hair); border-radius: 8px;
   }
-  .admin .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0; }
-  .admin .btn { border: 1px solid #E8ECF4; background: #E8ECF4; color: #0A1636; border-radius: 8px; padding: 7px 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .admin .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0; }
+  .admin .btn { border: 1px solid var(--text); background: var(--text); color: var(--bg1); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 500; cursor: pointer; }
   .admin .btn.ghost { background: transparent; color: var(--text); border-color: rgba(255, 255, 255, .25); }
-  .admin .btn.warn { background: #D9231C; border-color: #D9231C; color: #fff; }
-  .admin hr { border: 0; border-top: 1px solid rgba(255, 255, 255, .1); margin: 16px 0; }
+  .admin .btn.warn { background: var(--red); border-color: var(--red); color: #fff; }
+  .admin hr { border: 0; border-top: 1px solid var(--hair); margin: 18px 0; }
   .admin .count { width: 5em; }
   .codes { width: 100%; border-collapse: collapse; margin-top: 6px; }
-  .codes td { padding: 6px 4px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+  .codes td { padding: 7px 4px; border-bottom: 1px solid rgba(255, 255, 255, .055); }
   .codes .code { font-family: ui-monospace, Menlo, Consolas, monospace; letter-spacing: .06em; }
-  .codes .dim { color: rgba(142, 154, 179, .55); }
+  .codes .dim { color: rgba(124, 136, 163, .55); }
 
   @media (prefers-reduced-motion: reduce) {
-    .big { transition: none; }
-    .big.armed { animation: none; outline: 2px solid #fff; outline-offset: 6px; }
+    .big, .go { transition: none; }
+    .big.armed { animation: none; outline: 1px solid #fff; outline-offset: 10px; }
   }
 </style>
 </head>
@@ -244,7 +200,7 @@
 </main>
 
 <div id="gameView" hidden>
-  <button id="rankBtn" class="rank-btn" type="button" aria-expanded="false" aria-controls="rankPanel">순위 ▾</button>
+  <button id="rankBtn" class="rank-btn" type="button" aria-expanded="false" aria-controls="rankPanel">순위</button>
   <div id="rankPanel" class="rank-panel" hidden>
     <table><tbody id="rankBody"></tbody></table>
     <div class="foot"><button id="logoutBtn" class="linkbtn" type="button">나가기</button></div>
@@ -252,7 +208,7 @@
 
   <main class="stage">
     <div class="clock-frame"><div id="clock" class="clock" role="timer" aria-label="00:00:00"><svg id="clockSvg" aria-hidden="true"></svg></div></div>
-    <div class="btn-wrap"><svg id="ticks" class="ticks" viewBox="0 0 200 200" aria-hidden="true"></svg><div class="ring"><button id="bigBtn" class="big" type="button" disabled><span id="btnLabel"></span></button></div></div>
+    <div class="btn-wrap"><button id="bigBtn" class="big" type="button" disabled><span id="btnLabel"></span></button></div>
   </main>
 
   <section id="adminPanel" class="admin" hidden>
@@ -663,7 +619,7 @@ function createDemoBackend() {
 // 디지털 숫자 (7세그먼트)
 // =====================================================================
 const SEGS = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgecd', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
-const SH = 6, SG = 2.4, SL = 8, SR = 52, ST = 8, SM = 50, SB = 92;
+const SH = 4.4, SG = 2, SL = 8, SR = 52, ST = 8, SM = 50, SB = 92;
 const hseg = (x1, x2, y) => `${x1},${y} ${x1 + SH},${y - SH} ${x2 - SH},${y - SH} ${x2},${y} ${x2 - SH},${y + SH} ${x1 + SH},${y + SH}`;
 const vseg = (x, y1, y2) => `${x},${y1} ${x + SH},${y1 + SH} ${x + SH},${y2 - SH} ${x},${y2} ${x - SH},${y2 - SH} ${x - SH},${y1 + SH}`;
 const POLY = {
@@ -823,8 +779,7 @@ function tick() {
 function setRankOpen(open) {
   $('rankPanel').hidden = !open;
   $('rankBtn').setAttribute('aria-expanded', String(open));
-  $('rankBtn').textContent = open ? '순위 ▴' : '순위 ▾';
-}
+  }
 
 function showLogin() {
   $('gameView').hidden = true;
@@ -962,13 +917,6 @@ $('codesBody').addEventListener('click', (e) => {
 });
 
 // ---------- 시작 ----------
-$('ticks').innerHTML = Array.from({ length: 60 }, (_, i) => {
-  const a = (i * 6 - 90) * Math.PI / 180;
-  const major = i % 5 === 0;
-  const r1 = major ? 88 : 91.5, r2 = 97;
-  const f = (n) => (100 + n).toFixed(2);
-  return `<line${major ? ' class="major"' : ''} x1="${f(Math.cos(a) * r1)}" y1="${f(Math.sin(a) * r1)}" x2="${f(Math.cos(a) * r2)}" y2="${f(Math.sin(a) * r2)}"/>`;
-}).join('');
 drawClock('00:00:00');
 (async function boot() {
   try {
