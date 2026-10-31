@@ -886,8 +886,8 @@ $('resetSchedBtn').addEventListener('click', () => {
   adminRun(() => backend.adminSchedule(r.s, r.e, true), '기록을 지우고 새 기간으로 세팅했어요.').then(() => { schedDirty = false; });
 });
 $('testBtn').addEventListener('click', () => {
-  const s = Math.floor(now() / 60e3) * 60e3;
   if (!confirm('기록을 모두 지우고 지금부터 2시간짜리 테스트를 시작할까요?')) return;
+  const s = now();
   schedDirty = false;
   adminRun(() => backend.adminSchedule(s, s + 2 * 3600e3, true), '테스트를 시작했어요.');
 });
