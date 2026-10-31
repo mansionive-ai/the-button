@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>더 버튼</title>
+<meta name="theme-color" content="#D8DCD3">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%23A1AAA6'/><circle cx='16' cy='16' r='11' fill='%23E5482F'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Saira+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --enamel: #D8DCD3;
+    --plate: #EAEDE6;
+    --ink: #1E2B30;
+    --ink-soft: #56666B;
+    --steel: #A1AAA6;
+    --line: #C3C9C2;
+    --safety: #E8B931;
+    --me: #F5E2A0;
+    --glass: #17232A;
+    --danger: #A8382A;
+    --heat-h: 190;
+    --glow: 0;
+    --heat: hsl(var(--heat-h) 88% 54%);
+    --heat-top: hsl(var(--heat-h) 92% 70%);
+    --heat-deep: hsl(var(--heat-h) 78% 34%);
+    --heat-base: hsl(var(--heat-h) 70% 22%);
+    --heat-glow: hsl(var(--heat-h) 95% 60% / .55);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--enamel);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans KR', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  [hidden] { display: none !important; }
+  button { font: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- 로그인 ---------- */
+  .login {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+  }
+  .login-plate {
+    width: 100%;
+    max-width: 420px;
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 30px 22px 26px;
+    box-shadow: 0 1px 0 #fff inset, 0 12px 30px rgba(30, 43, 48, .12);
+  }
+  .login-mark {
+    width: 64px; height: 64px; border-radius: 50%;
+    margin: 0 0 18px;
+    background: radial-gradient(circle at 36% 30%, #ff9c84, #E5482F 48%, #8E2416);
+    box-shadow: 0 0 0 7px #CBD1CC, 0 0 0 8px var(--steel), 0 6px 0 9px rgba(30,43,48,.12);
+  }
+  .login h1 { font-size: 34px; line-height: 1.15; margin: 0 0 10px; letter-spacing: -.01em; }
+  .login .intro { margin: 0 0 22px; color: var(--ink-soft); font-size: 15px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .field .hint { font-weight: 400; color: var(--ink-soft); }
+  input[type=text], input[type=number], input[type=datetime-local] {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    padding: 11px 12px;
+    border: 1px solid var(--steel);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+  }
+  input:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
+  .code-input { letter-spacing: .12em; text-transform: uppercase; }
+  .err { color: var(--danger); font-size: 14px; min-height: 1.4em; margin: 4px 0 10px; }
+  .notice {
+    background: #FFF6D8; border: 1px solid var(--safety); border-radius: 10px;
+    padding: 12px 14px; font-size: 14px; margin-bottom: 16px;
+  }
+  .notice code { font-size: 13px; }
+
+  .btn {
+    appearance: none;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .btn:hover { background: #2d3e44; }
+  .btn:focus-visible { outline: 3px solid var(--safety); outline-offset: 2px; }
+  .btn:disabled { opacity: .55; cursor: progress; }
+  .btn.wide { width: 100%; padding: 13px 16px; font-size: 17px; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.ghost:hover { background: rgba(30,43,48,.06); }
+  .btn.warn { background: var(--danger); border-color: var(--danger); }
+  .btn.small { padding: 5px 10px; font-size: 13px; border-radius: 8px; }
+
+  /* ---------- 게임 화면 ---------- */
+  .wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px 56px; }
+  .demo-bar {
+    background: var(--safety); color: var(--ink); font-size: 13px; font-weight: 500;
+    text-align: center; padding: 6px 12px;
+  }
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; }
+  .brand i {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--heat);
+    box-shadow: 0 0 0 3px var(--plate), 0 0 0 4px var(--steel);
+  }
+  .who { display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--ink-soft); }
+  .who b { color: var(--ink); font-weight: 500; }
+  .linkbtn { background: none; border: 0; color: var(--ink-soft); text-decoration: underline; cursor: pointer; padding: 6px; font-size: 14px; }
+
+  .strip { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 8px; margin: 16px 0 14px; }
+  .cell { background: var(--plate); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; }
+  .cell small { display: block; font-size: 12px; color: var(--ink-soft); line-height: 1.3; }
+  .cell b { font-size: 16px; font-weight: 700; }
+
+  .ended-banner {
+    background: var(--ink); color: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; text-align: center;
+  }
+  .ended-banner strong { display: block; font-size: 22px; margin-top: 2px; }
+
+  .display {
+    background: var(--glass);
+    border: 7px solid var(--plate);
+    outline: 1px solid var(--steel);
+    border-radius: 20px;
+    padding: 20px 14px 16px;
+    text-align: center;
+    box-shadow: inset 0 3px 14px rgba(0,0,0,.65);
+  }
+  .display .label { color: #8FA0A2; font-size: 13px; }
+  .digits {
+    font-family: 'Saira Condensed', 'IBM Plex Sans KR', sans-serif;
+    font-weight: 700;
+    font-size: clamp(58px, 18vw, 96px);
+    line-height: 1.05;
+    color: var(--heat);
+    text-shadow: 0 0 calc(8px + var(--glow) * 22px) var(--heat-glow);
+    white-space: nowrap;
+  }
+  .digits span { display: inline-block; width: .55em; text-align: center; }
+  .digits span.sep { width: .26em; opacity: .8; }
+  .worth { margin-top: 6px; color: #C5D0CF; font-size: 15px; }
+  .worth b { color: #fff; font-size: 19px; font-weight: 700; }
+
+  .btn-zone { display: grid; place-items: center; margin: 26px 0 6px; }
+  .bezel {
+    width: min(66vw, 240px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 15px;
+    background: radial-gradient(circle at 35% 28%, #F6F8F4, #A9B2AE 62%, #7D8783);
+    box-shadow: 0 12px 26px rgba(30,43,48,.28), inset 0 -5px 9px rgba(0,0,0,.22);
+  }
+  .big {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 0;
+    cursor: pointer;
+    color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    background: radial-gradient(circle at 38% 30%, var(--heat-top), var(--heat) 46%, var(--heat-deep));
+    box-shadow:
+      0 8px 0 var(--heat-base),
+      0 15px 22px rgba(0,0,0,.35),
+      0 0 calc(var(--glow) * 56px) var(--heat-glow);
+    transform: translateY(-5px);
+    transition: transform .07s ease-out, box-shadow .07s ease-out;
+    text-shadow: 0 1px 3px rgba(0,0,0,.4);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .big .l1 { font-size: 26px; font-weight: 700; line-height: 1.2; }
+  .big .l2 { font-size: 14px; opacity: .9; }
+  .big:not(:disabled):active { transform: translateY(3px); box-shadow: 0 0 0 var(--heat-base), 0 4px 8px rgba(0,0,0,.3); }
+  .big:focus-visible { outline: 4px solid var(--ink); outline-offset: 22px; }
+  .big:disabled {
+    cursor: default;
+    color: #F1F4F1;
+    background: radial-gradient(circle at 38% 30%, #D3D8D4, #9CA5A1 55%, #78817D);
+    box-shadow: 0 8px 0 #5E6763, 0 15px 22px rgba(0,0,0,.22);
+  }
+  .big.armed { animation: armed .45s ease-in-out infinite alternate; }
+  @keyframes armed { to { filter: brightness(1.22) saturate(1.1); } }
+  .btn-sub { text-align: center; font-size: 14px; color: var(--ink-soft); margin: 16px auto 0; max-width: 34em; min-height: 3em; }
+  .last { text-align: center; font-size: 14px; margin: 4px 0 0; }
+  .last b { font-weight: 700; }
+
+  h2 { font-size: 17px; margin: 34px 0 10px; }
+  .board {
+    width: 100%;
+    border-collapse: separate; border-spacing: 0;
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .board th { font-size: 12px; font-weight: 500; color: var(--ink-soft); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .board td { padding: 9px 12px; border-bottom: 1px solid #D5DAD3; }
+  .board tr:last-child td { border-bottom: 0; }
+  .board .r { text-align: right; }
+  .board .rank { width: 3em; font-weight: 700; }
+  .board tr.me td { background: var(--me); }
+  .board .wait { color: var(--ink-soft); }
+  .board .nonick { color: var(--ink-soft); font-style: italic; }
+  .board .total { font-weight: 700; }
+
+  .feed { list-style: none; margin: 0; padding: 0; background: var(--plate); border: 1px solid var(--line); border-radius: 12px; }
+  .feed li { display: grid; grid-template-columns: 7.2em 1fr auto; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #D5DAD3; font-size: 15px; }
+  .feed li:last-child { border-bottom: 0; }
+  .feed .t { color: var(--ink-soft); white-space: nowrap; }
+  .feed li.empty { display: block; color: var(--ink-soft); }
+
+  details.rules { margin-top: 30px; background: var(--plate); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+  details.rules summary { cursor: pointer; font-weight: 500; }
+  details.rules ul { margin: 10px 0 4px; padding-left: 20px; font-size: 15px; }
+
+  /* ---------- 관리자 ---------- */
+  .admin { margin-top: 40px; background: var(--plate); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .admin::before { content: ''; display: block; height: 10px; background: repeating-linear-gradient(-45deg, var(--safety) 0 11px, var(--ink) 11px 22px); }
+  .admin .in { padding: 16px; }
+  .admin h3 { font-size: 16px; margin: 4px 0 10px; }
+  .admin h3 + p, .admin .help { font-size: 14px; color: var(--ink-soft); margin: -4px 0 12px; }
+  .admin .grid2 { display: grid; grid-template-columns: 1fr; gap: 0 10px; max-width: 320px; }
+  .admin input[type=datetime-local] { font-size: 15px; padding: 9px 10px; min-width: 0; }
+  .admin .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+  .admin hr { border: 0; border-top: 1px solid var(--line); margin: 22px 0 18px; }
+  .admin .count { width: 6em; font-size: 15px; padding: 8px 10px; }
+  .codes { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+  .codes th { text-align: left; font-weight: 500; color: var(--ink-soft); font-size: 12px; padding: 6px 6px; border-bottom: 1px solid var(--line); }
+  .codes td { padding: 6px; border-bottom: 1px solid #D5DAD3; }
+  .codes .code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 15px; letter-spacing: .08em; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    width: min(92vw, 460px);
+    background: var(--ink); color: #fff;
+    border-radius: 12px; padding: 12px 16px; font-size: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    z-index: 10;
+  }
+  .toast.bad { background: var(--danger); }
+
+  @media (max-width: 380px) {
+    .strip { grid-template-columns: 1fr 1fr; }
+    .strip .cell:nth-child(2) { grid-column: 1 / -1; grid-row: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .big { transition: none; }
+    .big.armed { animation: none; outline: 4px solid var(--safety); outline-offset: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<noscript><p style="padding:20px">이 사이트는 자바스크립트가 필요해요.</p></noscript>
+
+<!-- ================= 로그인 ================= -->
+<main id="loginView" class="login" hidden>
+  <div class="login-plate">
+    <div class="login-mark" aria-hidden="true"></div>
+    <h1>더 버튼</h1>
+    <p class="intro">타이머는 계속 올라가요. 버튼을 누르는 순간의 초가 내 점수가 되고, 타이머는 0초로 돌아가요. 하루에 딱 한 번만 누를 수 있어요.</p>
+    <div id="setupNotice" class="notice" hidden>
+      Firebase 설정이 아직 없어요. <code>index.html</code> 위쪽 스크립트의 <code>firebaseConfig</code>에 본인 프로젝트 값을 넣어 주세요.
+      설정 전에 화면만 보고 싶다면 주소 뒤에 <code>?demo=1</code>을 붙여 미리보기를 열 수 있어요.
+    </div>
+    <form id="loginForm" autocomplete="off" novalidate>
+      <div class="field">
+        <label for="codeIn">개인 코드</label>
+        <input id="codeIn" class="code-input" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="관리자에게 받은 코드">
+      </div>
+      <div class="field">
+        <label for="nickIn">닉네임 <span class="hint">(최대 12자)</span></label>
+        <input id="nickIn" type="text" maxlength="12" placeholder="순위표에 보일 이름">
+      </div>
+      <p id="loginErr" class="err" role="alert"></p>
+      <button id="loginBtn" class="btn wide" type="submit">입장하기</button>
+    </form>
+  </div>
+</main>
+
+<!-- ================= 게임 ================= -->
+<div id="gameView" hidden>
+  <div id="demoBar" class="demo-bar" hidden>미리보기 모드예요. 가짜 플레이어가 가끔 버튼을 눌러요. 관리자 화면은 코드 ADMIN으로 볼 수 있어요.</div>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand"><i aria-hidden="true"></i>더 버튼</div>
+      <div class="who"><b id="meName"></b><button id="logoutBtn" class="linkbtn" type="button">나가기</button></div>
+    </header>
+
+    <div class="strip" aria-live="off">
+      <div class="cell"><small>진행</small><b id="dayInfo" class="num">-</b></div>
+      <div class="cell"><small id="deadlineLabel">오늘 마감까지</small><b id="deadline" class="num">-</b></div>
+      <div class="cell"><small>오늘 누른 사람</small><b id="todayCount" class="num">-</b></div>
+    </div>
+
+    <div id="endedBanner" class="ended-banner" hidden></div>
+
+    <section class="display" aria-label="타이머">
+      <div class="label">마지막으로 누른 뒤 지난 시간</div>
+      <div id="digits" class="digits" aria-hidden="true"></div>
+      <div class="worth" id="worth"></div>
+    </section>
+
+    <div class="btn-zone">
+      <div class="bezel">
+        <button id="bigBtn" class="big" type="button" disabled>
+          <span class="l1" id="btnL1">준비 중</span>
+          <span class="l2" id="btnL2"></span>
+        </button>
+      </div>
+    </div>
+    <p id="btnSub" class="btn-sub" aria-live="polite"></p>
+    <p id="lastInfo" class="last"></p>
+
+    <h2>순위</h2>
+    <table class="board">
+      <thead><tr><th class="rank">순위</th><th>닉네임</th><th class="r">오늘</th><th class="r">총점</th></tr></thead>
+      <tbody id="boardBody"></tbody>
+    </table>
+
+    <h2>최근 기록</h2>
+    <ul id="feed" class="feed"></ul>
+
+    <details class="rules">
+      <summary>규칙 보기</summary>
+      <ul>
+        <li>타이머는 0초부터 계속 올라가요.</li>
+        <li>누군가 버튼을 누르면 그 순간의 초가 그 사람의 점수가 되고, 타이머는 바로 0초로 돌아가요.</li>
+        <li>한 사람은 하루에 한 번만 누를 수 있어요. 매일 자정(한국 시간)에 다시 누를 수 있게 돼요.</li>
+        <li>누르지 않은 날은 0점이에요.</li>
+        <li>게임 기간 동안 모은 점수의 합이 가장 높은 사람이 우승해요.</li>
+        <li>실수로 누르지 않도록, 한 번 탭하면 버튼이 깜빡이고 3초 안에 한 번 더 탭해야 확정돼요.</li>
+        <li>거의 동시에 두 명이 누르면 서버에 먼저 도착한 사람만 인정되고, 늦은 사람의 기회는 그대로 남아요.</li>
+      </ul>
+    </details>
+
+    <!-- 관리자 패널 -->
+    <section id="adminPanel" class="admin" hidden>
+      <div class="in">
+        <h3>게임 기간</h3>
+        <p>한국 시간 기준이에요. 실전 전에 꼭 "기록 지우고 이 기간으로 시작"을 눌러 테스트 기록을 지우세요.</p>
+        <div class="grid2">
+          <div class="field"><label for="startIn">시작</label><input id="startIn" type="datetime-local"></div>
+          <div class="field"><label for="endIn">종료</label><input id="endIn" type="datetime-local"></div>
+        </div>
+        <div class="row">
+          <button id="saveSchedBtn" class="btn ghost" type="button">기간만 저장</button>
+          <button id="resetSchedBtn" class="btn warn" type="button">기록 지우고 이 기간으로 시작</button>
+        </div>
+        <div class="row">
+          <button id="testBtn" class="btn ghost" type="button">테스트: 지금부터 2시간</button>
+          <button id="realBtn" class="btn ghost" type="button">실전 날짜로 채우기</button>
+        </div>
+
+        <hr>
+
+        <h3>플레이어 코드</h3>
+        <p>코드를 한 명씩 개인 톡으로 보내 주세요. 코드가 새어 나가면 재발급하면 옛 코드는 바로 막혀요.</p>
+        <div class="row" style="align-items:center">
+          <label for="countIn" style="font-size:14px">인원</label>
+          <input id="countIn" class="count" type="number" min="1" max="50" value="15">
+          <button id="makeCodesBtn" class="btn" type="button">코드 만들기</button>
+          <button id="copyCodesBtn" class="btn ghost" type="button">코드 전체 복사</button>
+        </div>
+        <table class="codes">
+          <thead><tr><th>번호</th><th>닉네임</th><th>코드</th><th></th></tr></thead>
+          <tbody id="codesBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script type="module">
+// =====================================================================
+// ① 여기에 Firebase 웹 앱 설정을 붙여넣으세요
+//    (Firebase 콘솔 > 프로젝트 설정 > 내 앱 > SDK 설정 및 구성 > "구성")
+// =====================================================================
+const firebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+
+// ② 실전 기본 기간 (한국 시간): 월요일 00시 ~ 일요일 00시(= 토요일 끝)
+const REAL_START = '2026-11-02T00:00';
+const REAL_END   = '2026-11-08T00:00';
+
+// =====================================================================
+// 아래부터는 수정하지 않아도 돼요
+// =====================================================================
+const KST = 9 * 3600e3;
+const DAY = 86400e3;
+const FB_VERSION = '10.12.2';
+const DEMO = new URLSearchParams(location.search).has('demo');
+
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, '0');
+const fmt = (n) => n.toLocaleString('ko-KR');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function dayKeyOf(ms) { const d = new Date(ms + KST); return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`; }
+function kstMidnight(ms) { const d = new Date(ms + KST); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - KST; }
+function kstClock(ms) { const d = new Date(ms + KST); return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`; }
+function kstMD(ms) { const d = new Date(ms + KST); return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`; }
+function kstInputToMs(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s || '');
+  if (!m) return NaN;
+  return Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - KST;
+}
+function msToKstInput(ms) {
+  const d = new Date(ms + KST);
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
+}
+function hms(sec) { return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor(sec % 3600 / 60))}:${pad(sec % 60)}`; }
+function countdown(ms) {
+  const sec = Math.max(0, Math.ceil(ms / 1000));
+  const d = Math.floor(sec / 86400);
+  return (d ? `${d}일 ` : '') + hms(sec % 86400);
+}
+function scoreOf(p) { return Math.max(0, Math.floor((p.atMs - p.prevAtMs) / 1000)); }
+function randomCode(used) {
+  const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  for (;;) {
+    const buf = new Uint32Array(8);
+    crypto.getRandomValues(buf);
+    const c = [...buf].map((x) => A[x % A.length]).join('');
+    if (!used.has(c)) { used.add(c); return c; }
+  }
+}
+function withTimeout(p, ms) {
+  return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(Object.assign(new Error('timeout'), { code: 'timeout' })), ms))]);
+}
+
+// =====================================================================
+// Firebase 백엔드
+// =====================================================================
+async function createFirebaseBackend(config) {
+  const base = `https://www.gstatic.com/firebasejs/${FB_VERSION}`;
+  const [appMod, authMod, fs] = await Promise.all([
+    import(`${base}/firebase-app.js`),
+    import(`${base}/firebase-auth.js`),
+    import(`${base}/firebase-firestore.js`),
+  ]);
+  const { getAuth, signInAnonymously, onAuthStateChanged, signOut } = authMod;
+  const { getFirestore, doc, getDoc, getDocs, getDocFromServer, setDoc, updateDoc, deleteDoc,
+          collection, onSnapshot, writeBatch, serverTimestamp, Timestamp } = fs;
+
+  const app = appMod.initializeApp(config);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let offset = 0;
+  let rawLastPressAt = null;
+  let unsubs = [];
+  let resyncTimer = null;
+
+  const sessRef = () => doc(db, 'sessions', auth.currentUser.uid);
+  const stateRef = doc(db, 'game', 'state');
+  const configRef = doc(db, 'game', 'config');
+
+  function waitAuth() {
+    return new Promise((res) => { const off = onAuthStateChanged(auth, (u) => { off(); res(u); }); });
+  }
+
+  async function syncClock() {
+    let best = null;
+    for (let i = 0; i < 2; i++) {
+      const t0 = Date.now();
+      await updateDoc(sessRef(), { ping: serverTimestamp() });
+      const t1 = Date.now();
+      const snap = await getDocFromServer(sessRef());
+      const ping = snap.get('ping');
+      if (!ping) continue;
+      const sample = { rtt: t1 - t0, off: ping.toMillis() - (t0 + t1) / 2 };
+      if (!best || sample.rtt < best.rtt) best = sample;
+    }
+    if (best) offset = best.off;
+  }
+
+  let visHooked = false;
+  function startResync() {
+    clearInterval(resyncTimer);
+    resyncTimer = setInterval(() => syncClock().catch(() => {}), 5 * 60e3);
+    if (visHooked) return;
+    visHooked = true;
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && auth.currentUser) syncClock().catch(() => {});
+    });
+  }
+
+  function friendly(e) {
+    const c = (e && e.code) || '';
+    if (c === 'auth/operation-not-allowed' || c === 'auth/admin-restricted-operation')
+      return 'Firebase 콘솔에서 익명 로그인이 꺼져 있어요. Authentication > 로그인 방법에서 "익명"을 켜 주세요.';
+    if (c === 'unavailable' || c === 'auth/network-request-failed' || c === 'timeout')
+      return '서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.';
+    if (c === 'permission-denied')
+      return '권한이 없어요. 보안 규칙이 게시됐는지 확인해 주세요.';
+    return e && e.message ? e.message : '알 수 없는 오류가 났어요.';
+  }
+
+  return {
+    serverNow: () => Date.now() + offset,
+
+    async restore() {
+      const user = await waitAuth();
+      if (!user) return null;
+      try {
+        const s = await getDoc(sessRef());
+        if (!s.exists()) return null;
+        const d = s.data();
+        if (d.role === 'player') {
+          const [c, p] = await Promise.all([getDoc(doc(db, 'codes', d.code)), getDoc(doc(db, 'players', d.playerId))]);
+          if (!c.exists() || !p.exists() || !p.get('nickname')) { await deleteDoc(sessRef()).catch(() => {}); return null; }
+        }
+        await syncClock();
+        startResync();
+        return { role: d.role, playerId: d.playerId };
+      } catch (e) {
+        return null;
+      }
+    },
+
+    async login(codeInput, nickInput) {
+      const raw = codeInput.trim();
+      const nick = nickInput.trim();
+      if (!raw) throw new Error('개인 코드를 입력해 주세요.');
+      if (!/^[A-Za-z0-9_-]{1,40}$/.test(raw)) throw new Error('코드에는 영문과 숫자만 들어가요. 받은 코드를 다시 확인해 주세요.');
+      try {
+        if (!auth.currentUser) await signInAnonymously(auth);
+        await deleteDoc(sessRef()).catch(() => {});
+        const upper = raw.toUpperCase();
+        const codeSnap = await getDoc(doc(db, 'codes', upper));
+
+        if (codeSnap.exists()) {
+          const playerId = codeSnap.get('playerId');
+          await setDoc(sessRef(), { code: upper, role: 'player', playerId, ping: serverTimestamp() });
+          try {
+            const ps = await getDocs(collection(db, 'players'));
+            const mine = ps.docs.find((d) => d.id === playerId);
+            if (!mine) throw new Error('플레이어 정보가 없어요. 관리자에게 코드를 다시 받아 주세요.');
+            const current = mine.get('nickname') || '';
+            const finalNick = nick || current;
+            if (!finalNick) throw new Error('닉네임을 입력해 주세요.');
+            const taken = ps.docs.some((d) => d.id !== playerId && String(d.get('nickname') || '').trim().toLowerCase() === finalNick.toLowerCase());
+            if (taken) throw new Error('이미 다른 사람이 쓰는 닉네임이에요.');
+            if (finalNick !== current) await updateDoc(doc(db, 'players', playerId), { nickname: finalNick });
+          } catch (e) {
+            await deleteDoc(sessRef()).catch(() => {});
+            throw e;
+          }
+          await syncClock();
+          startResync();
+          return { role: 'player', playerId };
+        }
+
+        // 플레이어 코드가 아니면 관리자 코드인지 확인
+        for (const c of [...new Set([raw, upper])]) {
+          try {
+            await setDoc(sessRef(), { code: c, role: 'admin', playerId: 'admin', ping: serverTimestamp() });
+            await syncClock();
+            startResync();
+            return { role: 'admin', playerId: 'admin' };
+          } catch (e) {
+            if (e.code !== 'permission-denied') throw e;
+          }
+        }
+        throw new Error('없는 코드예요. 관리자에게 받은 코드를 다시 확인해 주세요.');
+      } catch (e) {
+        if (e.code) throw new Error(friendly(e));
+        throw e;
+      }
+    },
+
+    async logout() {
+      unsubs.forEach((u) => u()); unsubs = [];
+      clearInterval(resyncTimer);
+      if (auth.currentUser) {
+        await deleteDoc(sessRef()).catch(() => {});
+        await signOut(auth).catch(() => {});
+      }
+    },
+
+    subscribe(h, isAdmin) {
+      unsubs.forEach((u) => u()); unsubs = [];
+      const onErr = (e) => h.error(friendly(e));
+      unsubs.push(onSnapshot(configRef, (s) => {
+        h.config(s.exists() ? { startMs: s.get('startAt').toMillis(), endMs: s.get('endAt').toMillis() } : null);
+      }, onErr));
+      unsubs.push(onSnapshot(stateRef, (s) => {
+        if (!s.exists()) { rawLastPressAt = null; h.state(null); return; }
+        rawLastPressAt = s.get('lastPressAt');
+        const est = s.data({ serverTimestamps: 'estimate' });
+        h.state({ lastPressMs: est.lastPressAt.toMillis(), lastPresser: est.lastPresser || null });
+      }, onErr));
+      unsubs.push(onSnapshot(collection(db, 'players'), (qs) => {
+        const out = {};
+        qs.forEach((d) => { out[d.id] = { nickname: d.get('nickname') || '' }; });
+        h.players(out);
+      }, onErr));
+      unsubs.push(onSnapshot(collection(db, 'presses'), (qs) => {
+        const out = [];
+        qs.forEach((d) => {
+          const x = d.data({ serverTimestamps: 'estimate' });
+          if (x.at && x.prevAt) out.push({ id: d.id, playerId: x.playerId, day: x.day, atMs: x.at.toMillis(), prevAtMs: x.prevAt.toMillis() });
+        });
+        h.presses(out);
+      }, onErr));
+      if (isAdmin) {
+        unsubs.push(onSnapshot(collection(db, 'codes'), (qs) => {
+          h.codes(qs.docs.map((d) => ({ code: d.id, playerId: d.get('playerId') })));
+        }, onErr));
+      }
+    },
+
+    async press(playerId) {
+      if (!rawLastPressAt) throw Object.assign(new Error('타이머 정보를 불러오는 중이에요. 잠시 후 다시 눌러 주세요.'), { code: 'loading' });
+      const used = rawLastPressAt;
+      const key = dayKeyOf(Date.now() + offset);
+      const b = writeBatch(db);
+      b.update(stateRef, { lastPressAt: serverTimestamp(), lastPresser: playerId });
+      b.set(doc(db, 'presses', `${playerId}_${key}`), { playerId, day: key, at: serverTimestamp(), prevAt: used });
+      try {
+        await withTimeout(b.commit(), 12000);
+      } catch (e) {
+        await sleep(700);
+        if (rawLastPressAt && !rawLastPressAt.isEqual(used)) throw Object.assign(new Error('beaten'), { code: 'beaten' });
+        if (e.code === 'timeout' || e.code === 'unavailable') throw Object.assign(new Error(friendly(e)), { code: 'network' });
+        throw Object.assign(new Error('rejected'), { code: 'rejected' });
+      }
+    },
+
+    async adminSchedule(startMs, endMs, wipe) {
+      const ps = await getDocs(collection(db, 'presses'));
+      const b = writeBatch(db);
+      if (wipe) ps.docs.forEach((d) => b.delete(d.ref));
+      b.set(configRef, { startAt: Timestamp.fromMillis(startMs), endAt: Timestamp.fromMillis(endMs) });
+      if (wipe || ps.empty) b.set(stateRef, { lastPressAt: Timestamp.fromMillis(startMs), lastPresser: null });
+      await b.commit();
+    },
+
+    async adminMakeCodes(n) {
+      const [cs, ps] = await Promise.all([getDocs(collection(db, 'codes')), getDocs(collection(db, 'players'))]);
+      const havePlayer = new Set(ps.docs.map((d) => d.id));
+      const haveCode = new Set(cs.docs.map((d) => d.get('playerId')));
+      const used = new Set(cs.docs.map((d) => d.id));
+      const b = writeBatch(db);
+      let made = 0;
+      for (let i = 1; i <= n; i++) {
+        const pid = 'p' + pad(i);
+        if (!havePlayer.has(pid)) b.set(doc(db, 'players', pid), { nickname: '' });
+        if (!haveCode.has(pid)) { b.set(doc(db, 'codes', randomCode(used)), { playerId: pid }); made++; }
+      }
+      await b.commit();
+      return made;
+    },
+
+    async adminReissue(pid) {
+      const cs = await getDocs(collection(db, 'codes'));
+      const used = new Set(cs.docs.map((d) => d.id));
+      const b = writeBatch(db);
+      cs.docs.filter((d) => d.get('playerId') === pid).forEach((d) => b.delete(d.ref));
+      b.set(doc(db, 'codes', randomCode(used)), { playerId: pid });
+      await b.commit();
+    },
+  };
+}
+
+// =====================================================================
+// 미리보기(데모) 백엔드: 주소 뒤에 ?demo=1 을 붙이면 Firebase 없이 화면을 볼 수 있어요
+// =====================================================================
+function createDemoBackend() {
+  const now0 = Date.now();
+  let startMs = kstMidnight(now0) - 2 * DAY;
+  let endMs = startMs + 6 * DAY;
+  const names = ['민수', '지은', '현우', '서연', '도윤', '하린', '준호', '예린', '태민', '수아', '건우', '나연', '시우', '유나'];
+  const players = { p01: { nickname: '' } };
+  names.forEach((n, i) => { players['p' + pad(i + 2)] = { nickname: n }; });
+  const used = new Set();
+  let codes = Object.keys(players).map((pid) => ({ code: randomCode(used), playerId: pid }));
+  let presses = [];
+  let last = startMs;
+  let lastPresser = null;
+  let h = null;
+  let me = null;
+
+  const bots = () => Object.keys(players).filter((p) => p !== 'p01');
+  const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function addPress(pid, at) {
+    presses.push({ id: `${pid}_${dayKeyOf(at)}`, playerId: pid, day: dayKeyOf(at), atMs: at, prevAtMs: last });
+    last = at; lastPresser = pid;
+  }
+  for (let day = 0; day < 3; day++) {
+    const ds = startMs + day * DAY;
+    const de = Math.min(ds + DAY, now0 - 90e3);
+    const from = ds + 7 * 3600e3;
+    if (de <= from) continue;
+    const who = shuffle(bots()).slice(0, day < 2 ? 14 : 7);
+    const times = who.map(() => from + Math.random() * (de - from)).sort((a, b) => a - b);
+    times.forEach((t, i) => addPress(who[i], t));
+  }
+  function emit() {
+    if (!h) return;
+    h.config({ startMs, endMs });
+    h.state({ lastPressMs: last, lastPresser });
+    h.players(JSON.parse(JSON.stringify(players)));
+    h.presses(presses.map((p) => ({ ...p })));
+    if (me && me.role === 'admin') h.codes(codes.map((c) => ({ ...c })));
+  }
+  setInterval(() => {
+    const now = Date.now();
+    if (now < startMs || now >= endMs || Math.random() > 0.22) return;
+    const k = dayKeyOf(now);
+    const free = bots().filter((p) => !presses.some((x) => x.playerId === p && x.day === k));
+    if (!free.length) return;
+    addPress(free[Math.floor(Math.random() * free.length)], now);
+    emit();
+  }, 6000);
+
+  return {
+    serverNow: () => Date.now(),
+    async restore() { return null; },
+    async login(code, nick) {
+      await sleep(250);
+      if (code.trim().toUpperCase() === 'ADMIN') { me = { role: 'admin', playerId: 'admin' }; return me; }
+      if (!code.trim()) throw new Error('개인 코드를 입력해 주세요. (미리보기에서는 아무 글자나 괜찮아요)');
+      if (!nick.trim()) throw new Error('닉네임을 입력해 주세요.');
+      players.p01.nickname = nick.trim();
+      me = { role: 'player', playerId: 'p01' };
+      return me;
+    },
+    async logout() { h = null; me = null; },
+    subscribe(handlers) { h = handlers; setTimeout(emit, 0); },
+    async press(pid) {
+      await sleep(300);
+      const now = Date.now();
+      if (presses.some((x) => x.playerId === pid && x.day === dayKeyOf(now))) throw Object.assign(new Error('rejected'), { code: 'rejected' });
+      addPress(pid, now);
+      emit();
+    },
+    async adminSchedule(s, e, wipe) {
+      startMs = s; endMs = e;
+      if (wipe || !presses.length) { presses = []; last = s; lastPresser = null; }
+      emit();
+    },
+    async adminMakeCodes(n) {
+      let made = 0;
+      for (let i = 1; i <= n; i++) {
+        const pid = 'p' + pad(i);
+        if (!players[pid]) players[pid] = { nickname: '' };
+        if (!codes.some((c) => c.playerId === pid)) { codes.push({ code: randomCode(used), playerId: pid }); made++; }
+      }
+      emit();
+      return made;
+    },
+    async adminReissue(pid) {
+      codes = codes.filter((c) => c.playerId !== pid);
+      codes.push({ code: randomCode(used), playerId: pid });
+      emit();
+    },
+  };
+}
+
+// =====================================================================
+// 화면
+// =====================================================================
+const S = { session: null, config: null, state: null, players: {}, presses: [], codes: [], loaded: false };
+let backend = null;
+let armedUntil = 0;
+let submitting = false;
+let tickTimer = null;
+let lastDigits = '';
+let lastHue = -1;
+let lastDayKey = '';
+let schedDirty = false;
+
+function toast(msg, bad = false) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.toggle('bad', bad);
+  t.hidden = false;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { t.hidden = true; }, bad ? 6000 : 4000);
+}
+
+function now() { return backend ? backend.serverNow() : Date.now(); }
+function nickOf(pid) { return (S.players[pid] && S.players[pid].nickname) || '(미접속)'; }
+function isAdmin() { return S.session && S.session.role === 'admin'; }
+
+function phase(t) {
+  if (!S.config || !S.state) return 'setup';
+  if (t < S.config.startMs) return 'before';
+  if (t >= S.config.endMs) return 'ended';
+  return 'live';
+}
+function myPressToday(t) {
+  if (!S.session || isAdmin()) return null;
+  const k = dayKeyOf(t);
+  return S.presses.find((p) => p.playerId === S.session.playerId && p.day === k) || null;
+}
+function standings(t) {
+  const k = dayKeyOf(t);
+  const rows = {};
+  for (const pid of Object.keys(S.players)) rows[pid] = { pid, total: 0, today: null };
+  for (const p of S.presses) {
+    if (!rows[p.playerId]) rows[p.playerId] = { pid: p.playerId, total: 0, today: null };
+    const sc = scoreOf(p);
+    rows[p.playerId].total += sc;
+    if (p.day === k) rows[p.playerId].today = sc;
+  }
+  const list = Object.values(rows).sort((a, b) => b.total - a.total || a.pid.localeCompare(b.pid));
+  let rank = 0, prev = null;
+  list.forEach((r, i) => { if (r.total !== prev) { rank = i + 1; prev = r.total; } r.rank = rank; });
+  return list;
+}
+
+function setHeat(sec) {
+  const heat = Math.min(1, Math.log1p(sec) / Math.log1p(4 * 3600));
+  const hue = Math.round(190 - 190 * heat);
+  if (hue !== lastHue) {
+    lastHue = hue;
+    document.documentElement.style.setProperty('--heat-h', hue);
+    document.documentElement.style.setProperty('--glow', heat.toFixed(2));
+  }
+}
+
+function renderTimer(t) {
+  const ph = phase(t);
+  let sec = 0;
+  if (S.state && (ph === 'live' || ph === 'ended')) {
+    sec = Math.max(0, Math.floor((Math.min(t, S.config.endMs) - S.state.lastPressMs) / 1000));
+  }
+  const str = hms(sec);
+  if (str !== lastDigits) {
+    lastDigits = str;
+    $('digits').innerHTML = [...str].map((c) => (c === ':' ? '<span class="sep">:</span>' : `<span>${c}</span>`)).join('');
+  }
+  setHeat(sec);
+  if (ph === 'live') $('worth').innerHTML = `지금 누르면 <b class="num">${fmt(sec)}</b>점`;
+  else if (ph === 'before') $('worth').textContent = '시작하면 0초부터 올라가요';
+  else if (ph === 'ended') $('worth').textContent = '게임이 끝났어요';
+  else $('worth').textContent = '관리자가 게임을 준비하고 있어요';
+}
+
+function renderStrip(t) {
+  const ph = phase(t);
+  if (!S.config) { $('dayInfo').textContent = '-'; $('deadline').textContent = '-'; $('todayCount').textContent = '-'; return; }
+  const totalDays = Math.max(1, Math.round((kstMidnight(S.config.endMs - 1) - kstMidnight(S.config.startMs)) / DAY) + 1);
+  if (ph === 'before') {
+    $('dayInfo').textContent = `시작 전`;
+    $('deadlineLabel').textContent = '시작까지';
+    $('deadline').textContent = countdown(S.config.startMs - t);
+  } else if (ph === 'ended') {
+    $('dayInfo').textContent = `${totalDays}일 완료`;
+    $('deadlineLabel').textContent = '상태';
+    $('deadline').textContent = '종료';
+  } else {
+    const dayN = Math.floor((kstMidnight(t) - kstMidnight(S.config.startMs)) / DAY) + 1;
+    $('dayInfo').textContent = `${dayN}일차 / ${totalDays}일`;
+    const until = Math.min(kstMidnight(t) + DAY, S.config.endMs);
+    $('deadlineLabel').textContent = until === S.config.endMs ? '게임 종료까지' : '오늘 마감까지';
+    $('deadline').textContent = countdown(until - t);
+  }
+  const k = dayKeyOf(t);
+  const pressedToday = new Set(S.presses.filter((p) => p.day === k).map((p) => p.playerId)).size;
+  $('todayCount').textContent = ph === 'live' ? `${pressedToday} / ${Object.keys(S.players).length}명` : '-';
+}
+
+function renderButton(t) {
+  const btn = $('bigBtn');
+  const ph = phase(t);
+  const mine = myPressToday(t);
+  const armed = armedUntil > performance.now();
+  let l1 = '', l2 = '', sub = '', enabled = false;
+
+  if (isAdmin()) { l1 = '관리자'; sub = '관리자는 누를 수 없어요. 아래 관리자 패널에서 게임을 관리해요.'; }
+  else if (ph === 'setup') { l1 = '준비 중'; sub = '관리자가 아직 게임 기간을 정하지 않았어요.'; }
+  else if (ph === 'before') { l1 = '시작 전'; sub = `${countdown(S.config.startMs - t)} 뒤에 시작해요.`; }
+  else if (ph === 'ended') { l1 = '종료'; sub = '게임이 끝났어요. 순위표에서 결과를 확인하세요.'; }
+  else if (mine) { l1 = '오늘 완료'; l2 = `${fmt(scoreOf(mine))}점`; sub = `오늘 ${kstClock(mine.atMs)}에 눌러서 ${fmt(scoreOf(mine))}점을 얻었어요. 자정이 지나면 다시 누를 수 있어요.`; }
+  else if (submitting) { l1 = '처리 중'; sub = '서버에 기록하고 있어요.'; }
+  else if (armed) { l1 = '한 번 더!'; l2 = '눌러서 확정'; sub = '3초 안에 한 번 더 누르면 확정돼요.'; enabled = true; }
+  else { l1 = '누르기'; l2 = '하루 1번'; sub = '한 번 누르면 깜빡이고, 한 번 더 누르면 확정돼요.'; enabled = true; }
+
+  btn.disabled = !enabled;
+  btn.classList.toggle('armed', armed && enabled);
+  if ($('btnL1').textContent !== l1) $('btnL1').textContent = l1;
+  if ($('btnL2').textContent !== l2) $('btnL2').textContent = l2;
+  if ($('btnSub').textContent !== sub) $('btnSub').textContent = sub;
+  btn.setAttribute('aria-label', l2 ? `${l1}, ${l2}` : l1);
+}
+
+function renderLast() {
+  const el = $('lastInfo');
+  if (!S.state || !S.state.lastPresser) { el.textContent = S.config ? '아직 아무도 누르지 않았어요.' : ''; return; }
+  const p = [...S.presses].filter((x) => x.playerId === S.state.lastPresser).sort((a, b) => b.atMs - a.atMs)[0];
+  el.innerHTML = p
+    ? `마지막으로 누른 사람은 <b>${esc(nickOf(p.playerId))}</b>님이에요. ${kstClock(p.atMs)}에 ${fmt(scoreOf(p))}점을 가져갔어요.`
+    : `마지막으로 누른 사람은 <b>${esc(nickOf(S.state.lastPresser))}</b>님이에요.`;
+}
+
+function renderBoard(t) {
+  const rows = standings(t);
+  const meId = S.session && S.session.playerId;
+  const live = phase(t) === 'live';
+  $('boardBody').innerHTML = rows.length ? rows.map((r) => {
+    const nick = S.players[r.pid] && S.players[r.pid].nickname;
+    const today = r.today !== null ? fmt(r.today) : (live ? '<span class="wait">대기</span>' : '<span class="wait">-</span>');
+    return `<tr class="${r.pid === meId ? 'me' : ''}">
+      <td class="rank num">${r.rank}</td>
+      <td>${nick ? esc(nick) : '<span class="nonick">(미접속)</span>'}</td>
+      <td class="r num">${today}</td>
+      <td class="r num total">${fmt(r.total)}</td></tr>`;
+  }).join('') : '<tr><td colspan="4" class="wait">아직 플레이어가 없어요.</td></tr>';
+
+  const banner = $('endedBanner');
+  if (phase(t) === 'ended' && rows.length && rows[0].total > 0) {
+    const winners = rows.filter((r) => r.rank === 1).map((r) => esc(nickOf(r.pid))).join(', ');
+    banner.innerHTML = `게임 종료<strong>우승 ${winners} (${fmt(rows[0].total)}점)</strong>`;
+    banner.hidden = false;
+  } else banner.hidden = true;
+}
+
+function renderFeed(t) {
+  const today = dayKeyOf(t);
+  const list = [...S.presses].sort((a, b) => b.atMs - a.atMs).slice(0, 15);
+  $('feed').innerHTML = list.length ? list.map((p) => {
+    const when = p.day === today ? kstClock(p.atMs) : `${kstMD(p.atMs)} ${kstClock(p.atMs)}`;
+    return `<li><span class="t num">${when}</span><span>${esc(nickOf(p.playerId))}</span><span class="num">${fmt(scoreOf(p))}점</span></li>`;
+  }).join('') : '<li class="empty">아직 기록이 없어요. 첫 번째로 누를 사람은 누구일까요?</li>';
+}
+
+function renderAdmin() {
+  const panel = $('adminPanel');
+  panel.hidden = !isAdmin();
+  if (!isAdmin()) return;
+  if (!schedDirty) {
+    $('startIn').value = S.config ? msToKstInput(S.config.startMs) : REAL_START;
+    $('endIn').value = S.config ? msToKstInput(S.config.endMs) : REAL_END;
+  }
+  const byPid = {};
+  S.codes.forEach((c) => { (byPid[c.playerId] = byPid[c.playerId] || []).push(c.code); });
+  const pids = [...new Set([...Object.keys(S.players), ...Object.keys(byPid)])].sort();
+  $('codesBody').innerHTML = pids.length ? pids.map((pid) => `<tr>
+      <td class="num">${parseInt(pid.slice(1), 10)}</td>
+      <td>${S.players[pid] && S.players[pid].nickname ? esc(S.players[pid].nickname) : '<span class="nonick">(미접속)</span>'}</td>
+      <td class="code">${(byPid[pid] || ['-']).join(', ')}</td>
+      <td style="text-align:right"><button class="btn ghost small" type="button" data-reissue="${pid}">재발급</button></td>
+    </tr>`).join('') : '<tr><td colspan="4" class="nonick">아직 코드가 없어요. 인원을 정하고 "코드 만들기"를 누르세요.</td></tr>';
+}
+
+function renderAll() {
+  const t = now();
+  $('meName').textContent = isAdmin() ? '관리자' : (S.session ? nickOf(S.session.playerId) : '');
+  renderTimer(t);
+  renderStrip(t);
+  renderButton(t);
+  renderLast();
+  renderBoard(t);
+  renderFeed(t);
+  renderAdmin();
+}
+
+function tick() {
+  const t = now();
+  renderTimer(t);
+  renderStrip(t);
+  renderButton(t);
+  const k = dayKeyOf(t) + phase(t);
+  if (k !== lastDayKey) { lastDayKey = k; renderBoard(t); renderFeed(t); }
+}
+
+function showLogin() {
+  $('gameView').hidden = true;
+  $('loginView').hidden = false;
+  document.title = '더 버튼';
+}
+
+function enterGame(session) {
+  S.session = session;
+  $('loginView').hidden = true;
+  $('gameView').hidden = false;
+  $('demoBar').hidden = !DEMO;
+  backend.subscribe({
+    config: (c) => { S.config = c; renderAll(); },
+    state: (s) => { S.state = s; renderAll(); },
+    players: (p) => { S.players = p; renderAll(); },
+    presses: (p) => { S.presses = p; renderAll(); },
+    codes: (c) => { S.codes = c; renderAdmin(); },
+    error: (m) => toast(m, true),
+  }, session.role === 'admin');
+  clearInterval(tickTimer);
+  tickTimer = setInterval(tick, 200);
+  renderAll();
+}
+
+// ---------- 이벤트 ----------
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!backend) return;
+  $('loginErr').textContent = '';
+  $('loginBtn').disabled = true;
+  $('loginBtn').textContent = '확인 중…';
+  try {
+    const s = await backend.login($('codeIn').value, $('nickIn').value);
+    $('codeIn').value = '';
+    enterGame(s);
+  } catch (err) {
+    $('loginErr').textContent = err.message;
+  } finally {
+    $('loginBtn').disabled = false;
+    $('loginBtn').textContent = '입장하기';
+  }
+});
+
+$('logoutBtn').addEventListener('click', async () => {
+  clearInterval(tickTimer);
+  await backend.logout();
+  Object.assign(S, { session: null, config: null, state: null, players: {}, presses: [], codes: [] });
+  showLogin();
+});
+
+$('bigBtn').addEventListener('click', async () => {
+  const t = now();
+  if (submitting || isAdmin() || phase(t) !== 'live' || myPressToday(t)) return;
+  const p = performance.now();
+  if (armedUntil < p) {
+    armedUntil = p + 3000;
+    renderButton(t);
+    return;
+  }
+  armedUntil = 0;
+  submitting = true;
+  renderButton(t);
+  try {
+    await backend.press(S.session.playerId);
+    await sleep(250);
+    const mine = myPressToday(now());
+    toast(mine ? `눌렀어요! 오늘 ${fmt(scoreOf(mine))}점을 얻었어요.` : '눌렀어요! 점수가 곧 반영돼요.');
+  } catch (err) {
+    const t2 = now();
+    const nearMidnight = Math.abs(t2 - (kstMidnight(t2))) < 15e3 || Math.abs(kstMidnight(t2) + DAY - t2) < 15e3;
+    if (err.code === 'beaten') toast(`간발의 차로 ${nickOf(S.state && S.state.lastPresser)}님이 먼저 눌렀어요. 오늘 기회는 그대로 남아 있어요.`, true);
+    else if (err.code === 'network' || err.code === 'loading') toast(err.message, true);
+    else if (nearMidnight) toast('자정 경계에 눌려서 기록되지 않았어요. 오늘 기회가 남아 있는지 확인하고 다시 눌러 주세요.', true);
+    else if (phase(t2) !== 'live') toast('지금은 누를 수 없는 시간이에요.', true);
+    else toast('기록되지 않았어요. 새로고침한 뒤 다시 눌러 주세요.', true);
+  } finally {
+    submitting = false;
+    renderButton(now());
+  }
+});
+
+// 관리자
+function readSchedule() {
+  const s = kstInputToMs($('startIn').value);
+  const e = kstInputToMs($('endIn').value);
+  if (!Number.isFinite(s) || !Number.isFinite(e)) { toast('시작과 종료 시각을 모두 입력해 주세요.', true); return null; }
+  if (e <= s) { toast('종료 시각은 시작 시각보다 뒤여야 해요.', true); return null; }
+  return { s, e };
+}
+async function adminRun(fn, okMsg) {
+  try { const r = await fn(); if (okMsg) toast(typeof okMsg === 'function' ? okMsg(r) : okMsg); }
+  catch (err) { toast(err.code === 'permission-denied' ? '권한이 없어요. 관리자 코드로 다시 로그인해 주세요.' : (err.message || '실패했어요.'), true); }
+}
+$('startIn').addEventListener('input', () => { schedDirty = true; });
+$('endIn').addEventListener('input', () => { schedDirty = true; });
+$('saveSchedBtn').addEventListener('click', () => {
+  const r = readSchedule(); if (!r) return;
+  adminRun(() => backend.adminSchedule(r.s, r.e, false), '기간을 저장했어요.').then(() => { schedDirty = false; });
+});
+$('resetSchedBtn').addEventListener('click', () => {
+  const r = readSchedule(); if (!r) return;
+  if (!confirm(`지금까지의 누르기 기록과 점수를 모두 지우고\n${$('startIn').value.replace('T', ' ')} 부터 새로 시작할까요?`)) return;
+  adminRun(() => backend.adminSchedule(r.s, r.e, true), '기록을 지우고 새 기간으로 세팅했어요.').then(() => { schedDirty = false; });
+});
+$('testBtn').addEventListener('click', () => {
+  const s = Math.floor(now() / 60e3) * 60e3;
+  if (!confirm('기록을 모두 지우고 지금부터 2시간짜리 테스트 게임을 시작할까요?')) return;
+  schedDirty = false;
+  adminRun(() => backend.adminSchedule(s, s + 2 * 3600e3, true), '테스트 게임을 시작했어요. 실전 전에 다시 초기화하세요.');
+});
+$('realBtn').addEventListener('click', () => {
+  $('startIn').value = REAL_START;
+  $('endIn').value = REAL_END;
+  schedDirty = true;
+  toast('실전 날짜를 채웠어요. "기록 지우고 이 기간으로 시작"을 눌러야 적용돼요.');
+});
+$('makeCodesBtn').addEventListener('click', () => {
+  const n = parseInt($('countIn').value, 10);
+  if (!(n >= 1 && n <= 50)) { toast('인원은 1~50명 사이로 정해 주세요.', true); return; }
+  adminRun(() => backend.adminMakeCodes(n), (made) => (made ? `코드 ${made}개를 만들었어요.` : '이미 모든 플레이어에게 코드가 있어요.'));
+});
+$('copyCodesBtn').addEventListener('click', async () => {
+  const lines = [...S.codes].sort((a, b) => a.playerId.localeCompare(b.playerId))
+    .map((c) => `${parseInt(c.playerId.slice(1), 10)}번: ${c.code}`).join('\n');
+  if (!lines) { toast('복사할 코드가 없어요.', true); return; }
+  try { await navigator.clipboard.writeText(lines); toast('코드 목록을 복사했어요.'); }
+  catch { prompt('아래 내용을 복사하세요.', lines); }
+});
+$('codesBody').addEventListener('click', (e) => {
+  const pid = e.target.closest('[data-reissue]')?.dataset.reissue;
+  if (!pid) return;
+  if (!confirm(`${parseInt(pid.slice(1), 10)}번 플레이어의 코드를 새로 만들까요?\n옛 코드로 접속한 기기는 버튼을 누를 수 없게 돼요.`)) return;
+  adminRun(() => backend.adminReissue(pid), '새 코드를 만들었어요. 해당 플레이어에게 다시 보내 주세요.');
+});
+
+// ---------- 시작 ----------
+(async function boot() {
+  if (!DEMO && !firebaseConfig.apiKey) {
+    $('setupNotice').hidden = false;
+    $('loginBtn').disabled = true;
+    showLogin();
+    return;
+  }
+  try {
+    backend = DEMO ? createDemoBackend() : await createFirebaseBackend(firebaseConfig);
+  } catch (e) {
+    showLogin();
+    $('loginErr').textContent = 'Firebase를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.';
+    return;
+  }
+  const s = await backend.restore();
+  if (s) enterGame(s); else showLogin();
+})();
+</script>
+</body>
+</html>
