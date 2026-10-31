@@ -220,7 +220,7 @@
     </div>
     <div class="row">
       <button id="testBtn" class="btn ghost" type="button">테스트: 지금부터 2시간</button>
-      <button id="realBtn" class="btn ghost" type="button">실전 날짜로 채우기</button>
+      <button id="realBtn" class="btn warn" type="button">실전 준비 (전부 초기화 + 새 코드)</button>
     </div>
     <hr>
     <div class="row">
@@ -315,9 +315,11 @@ async function createFirebaseBackend(config) {
     return new Promise((res) => { const off = onAuthStateChanged(auth, (u) => { off(); res(u); }); });
   }
 
-  async function syncClock() {
+  let lastSync = 0;
+  async function syncClock(samples = 2) {
+    lastSync = Date.now();
     let best = null;
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < samples; i++) {
       const t0 = Date.now();
       await updateDoc(sessRef(), { ping: serverTimestamp() });
       const t1 = Date.now();
@@ -333,11 +335,12 @@ async function createFirebaseBackend(config) {
   let visHooked = false;
   function startResync() {
     clearInterval(resyncTimer);
-    resyncTimer = setInterval(() => syncClock().catch(() => {}), 5 * 60e3);
+    resyncTimer = setInterval(() => syncClock(1).catch(() => {}), 15 * 60e3);
     if (visHooked) return;
     visHooked = true;
+    // 화면을 다시 켤 때 시간 재동기화 (서버 사용량을 아끼려고 3분에 한 번까지만)
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && auth.currentUser) syncClock().catch(() => {});
+      if (document.visibilityState === 'visible' && auth.currentUser && Date.now() - lastSync > 3 * 60e3) syncClock(1).catch(() => {});
     });
   }
 
@@ -516,6 +519,26 @@ async function createFirebaseBackend(config) {
       b.set(doc(db, 'codes', randomCode(used)), { playerId: pid });
       await b.commit();
     },
+
+    // 실전 준비: 기록·닉네임·코드를 모두 지우고 새 코드 발급 + 기간 세팅
+    // (테스트 때 로그인해 둔 기기들은 옛 코드가 사라져서 전부 무효가 됨)
+    async adminPrepareReal(startMs, endMs) {
+      const [ps, cs, pl] = await Promise.all([
+        getDocs(collection(db, 'presses')), getDocs(collection(db, 'codes')), getDocs(collection(db, 'players')),
+      ]);
+      const used = new Set(cs.docs.map((d) => d.id));
+      const b = writeBatch(db);
+      ps.docs.forEach((d) => b.delete(d.ref));
+      cs.docs.forEach((d) => b.delete(d.ref));
+      pl.docs.forEach((d) => {
+        b.update(d.ref, { nickname: '' });
+        b.set(doc(db, 'codes', randomCode(used)), { playerId: d.id });
+      });
+      b.set(configRef, { startAt: Timestamp.fromMillis(startMs), endAt: Timestamp.fromMillis(endMs) });
+      b.set(stateRef, { lastPressAt: Timestamp.fromMillis(startMs), lastPresser: null });
+      await b.commit();
+      return pl.size;
+    },
   };
 }
 
@@ -610,6 +633,14 @@ function createDemoBackend() {
       codes = codes.filter((c) => c.playerId !== pid);
       codes.push({ code: randomCode(used), playerId: pid });
       emit();
+    },
+    async adminPrepareReal(s, e) {
+      startMs = s; endMs = e;
+      presses = []; last = s; lastPresser = null;
+      Object.keys(players).forEach((pid) => { players[pid].nickname = ''; });
+      codes = Object.keys(players).map((pid) => ({ code: randomCode(used), playerId: pid }));
+      emit();
+      return Object.keys(players).length;
     },
   };
 }
@@ -892,10 +923,10 @@ $('testBtn').addEventListener('click', () => {
   adminRun(() => backend.adminSchedule(s, s + 2 * 3600e3, true), '테스트를 시작했어요.');
 });
 $('realBtn').addEventListener('click', () => {
-  $('startIn').value = REAL_START;
-  $('endIn').value = REAL_END;
-  schedDirty = true;
-  toast('실전 날짜를 채웠어요. "기록 지우고 이 기간으로 시작"을 눌러야 적용돼요.');
+  const s = kstInputToMs(REAL_START), e = kstInputToMs(REAL_END);
+  if (!confirm(`실전 준비를 할까요?\n\n- 테스트 기록과 점수 전부 삭제\n- 닉네임 전부 초기화\n- 모든 코드를 새로 발급 (예전 코드와 테스트 기기 로그인은 무효)\n- 기간: ${REAL_START.replace('T', ' ')} ~ ${REAL_END.replace('T', ' ')}\n\n끝나면 새 코드를 다시 보내야 해요.`)) return;
+  schedDirty = false;
+  adminRun(() => backend.adminPrepareReal(s, e), (n) => `실전 준비 완료. 새 코드 ${n}개를 복사해서 보내 주세요.`);
 });
 $('makeCodesBtn').addEventListener('click', () => {
   const n = parseInt($('countIn').value, 10);
